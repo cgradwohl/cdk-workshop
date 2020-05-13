@@ -26,3 +26,18 @@ This means that you can use the AWS CloudFormation console to manage your stacks
 Now that we modified our stack’s contents, we can ask the toolkit to show us the difference between
 our CDK app and what’s currently deployed. This is a safe way to check what will happen once we run
 cdk deploy and is always good practice
+
+5. AWS Construct Class Param
+*** everything inherits from Class Construct***
+`scope`: the first argument is always the scope in which this construct is created. In almost all cases,
+you’ll be defining constructs within the scope of current construct, which means you’ll usually just want
+to pass this for the first argument. Make a habit out of it.
+
+`id`: the second argument is the local identity of the construct. It’s an ID that has to be unique amongst
+construct within the same scope. The CDK uses this identity to calculate the CloudFormation Logical ID for
+each resource defined within this scope. To read more about IDs in the CDK, see the CDK user manual.
+
+`props`: the last (sometimes optional) argument is always a set of initialization properties. Those are
+specific to each construct. For example, the lambda.Function construct accepts properties like runtime,
+code and handler. You can explore the various options using your IDE’s auto-complete or in the online
+documentation.

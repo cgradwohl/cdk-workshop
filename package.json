@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "synth": "cdk synth > ./log.txt;"
+    "synth": "cdk synth > ./log.yml;"
   },
   "devDependencies": {
     "aws-cdk": "1.38.0",
@@ -22,6 +22,7 @@
     "typescript": "~3.7.2"
   },
   "dependencies": {
+    "@aws-cdk/aws-lambda": "^1.38.0",
     "@aws-cdk/aws-sns": "1.38.0",
     "@aws-cdk/aws-sns-subscriptions": "1.38.0",
     "@aws-cdk/aws-sqs": "1.38.0",

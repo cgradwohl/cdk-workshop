@@ -1,53 +1,68 @@
 Resources:
-  CdkWorkshopQueue50D9D426:
-    Type: AWS::SQS::Queue
+  HelloHandlerServiceRole11EF7C63:
+    Type: AWS::IAM::Role
     Properties:
-      VisibilityTimeout: 300
-    Metadata:
-      aws:cdk:path: CdkWorkshopStack/CdkWorkshopQueue/Resource
-  CdkWorkshopQueuePolicyAF2494A5:
-    Type: AWS::SQS::QueuePolicy
-    Properties:
-      PolicyDocument:
+      AssumeRolePolicyDocument:
         Statement:
-          - Action: sqs:SendMessage
-            Condition:
-              ArnEquals:
-                aws:SourceArn:
-                  Ref: CdkWorkshopTopicD368A42F
+          - Action: sts:AssumeRole
             Effect: Allow
             Principal:
-              Service: sns.amazonaws.com
-            Resource:
-              Fn::GetAtt:
-                - CdkWorkshopQueue50D9D426
-                - Arn
+              Service: lambda.amazonaws.com
         Version: "2012-10-17"
-      Queues:
-        - Ref: CdkWorkshopQueue50D9D426
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
     Metadata:
-      aws:cdk:path: CdkWorkshopStack/CdkWorkshopQueue/Policy/Resource
-  CdkWorkshopQueueCdkWorkshopStackCdkWorkshopTopicD7BE96438B5AD106:
-    Type: AWS::SNS::Subscription
+      aws:cdk:path: CdkWorkshopStack/HelloHandler/ServiceRole/Resource
+  HelloHandler2E4FBA4D:
+    Type: AWS::Lambda::Function
     Properties:
-      Protocol: sqs
-      TopicArn:
-        Ref: CdkWorkshopTopicD368A42F
-      Endpoint:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters5dcceeae13d19ccc24fbf80b527b5cd04a655da5c0e8368ad045334917bfaa09S3Bucket923DBB46
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters5dcceeae13d19ccc24fbf80b527b5cd04a655da5c0e8368ad045334917bfaa09S3VersionKey7138363F
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters5dcceeae13d19ccc24fbf80b527b5cd04a655da5c0e8368ad045334917bfaa09S3VersionKey7138363F
+      Handler: hello.handler
+      Role:
         Fn::GetAtt:
-          - CdkWorkshopQueue50D9D426
+          - HelloHandlerServiceRole11EF7C63
           - Arn
+      Runtime: nodejs10.x
+    DependsOn:
+      - HelloHandlerServiceRole11EF7C63
     Metadata:
-      aws:cdk:path: CdkWorkshopStack/CdkWorkshopQueue/CdkWorkshopStackCdkWorkshopTopicD7BE9643/Resource
-  CdkWorkshopTopicD368A42F:
-    Type: AWS::SNS::Topic
-    Metadata:
-      aws:cdk:path: CdkWorkshopStack/CdkWorkshopTopic/Resource
+      aws:cdk:path: CdkWorkshopStack/HelloHandler/Resource
+      aws:asset:path: asset.5dcceeae13d19ccc24fbf80b527b5cd04a655da5c0e8368ad045334917bfaa09
+      aws:asset:property: Code
   CDKMetadata:
     Type: AWS::CDK::Metadata
     Properties:
-      Modules: aws-cdk=1.38.0,@aws-cdk/aws-cloudwatch=1.38.0,@aws-cdk/aws-iam=1.38.0,@aws-cdk/aws-kms=1.38.0,@aws-cdk/aws-sns=1.38.0,@aws-cdk/aws-sns-subscriptions=1.38.0,@aws-cdk/aws-sqs=1.38.0,@aws-cdk/cloud-assembly-schema=1.38.0,@aws-cdk/core=1.38.0,@aws-cdk/cx-api=1.38.0,@aws-cdk/region-info=1.38.0,jsii-runtime=node.js/v12.16.3
+      Modules: aws-cdk=1.38.0,@aws-cdk/assets=1.38.0,@aws-cdk/aws-cloudwatch=1.38.0,@aws-cdk/aws-ec2=1.38.0,@aws-cdk/aws-events=1.38.0,@aws-cdk/aws-iam=1.38.0,@aws-cdk/aws-kms=1.38.0,@aws-cdk/aws-lambda=1.38.0,@aws-cdk/aws-logs=1.38.0,@aws-cdk/aws-s3=1.38.0,@aws-cdk/aws-s3-assets=1.38.0,@aws-cdk/aws-sqs=1.38.0,@aws-cdk/aws-ssm=1.38.0,@aws-cdk/cloud-assembly-schema=1.38.0,@aws-cdk/core=1.38.0,@aws-cdk/cx-api=1.38.0,@aws-cdk/region-info=1.38.0,jsii-runtime=node.js/v12.16.3
     Condition: CDKMetadataAvailable
+Parameters:
+  AssetParameters5dcceeae13d19ccc24fbf80b527b5cd04a655da5c0e8368ad045334917bfaa09S3Bucket923DBB46:
+    Type: String
+    Description: S3 bucket for asset "5dcceeae13d19ccc24fbf80b527b5cd04a655da5c0e8368ad045334917bfaa09"
+  AssetParameters5dcceeae13d19ccc24fbf80b527b5cd04a655da5c0e8368ad045334917bfaa09S3VersionKey7138363F:
+    Type: String
+    Description: S3 key for asset version "5dcceeae13d19ccc24fbf80b527b5cd04a655da5c0e8368ad045334917bfaa09"
+  AssetParameters5dcceeae13d19ccc24fbf80b527b5cd04a655da5c0e8368ad045334917bfaa09ArtifactHash7BADB98B:
+    Type: String
+    Description: Artifact hash for asset "5dcceeae13d19ccc24fbf80b527b5cd04a655da5c0e8368ad045334917bfaa09"
 Conditions:
   CDKMetadataAvailable:
     Fn::Or:
