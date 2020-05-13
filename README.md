@@ -47,3 +47,21 @@ Lambda proxy integration is a lightweight, flexible API Gateway API integration 
 integrate an API method – or an entire API – with a Lambda function. The Lambda function can be written
 in any language that Lambda supports. Because it's a proxy integration, you can change the Lambda function
 implementation at any time without needing to redeploy your API.
+
+7. AWS Stacks
+A stack is a collection of AWS resources that you can manage as a single unit. In other words, you can
+create, update, or delete a collection of resources by creating, updating, or deleting stacks. All the
+resources in a stack are defined by the stack's AWS CloudFormation template. A stack, for instance, can
+ include all the resources required to run a web application, such as a web server, a database, and
+ networking rules. If you no longer require that web application, you can simply delete the stack, and
+ all of its related resources are deleted.
+
+ 8. AWS Stack Outputs
+ To share information between stacks, export a stack's output values. Other stacks that are in the same
+ AWS account and region can import the exported values. For example, you might have a single networking
+ stack that exports the IDs of a subnet and security group for public web servers. Stacks with a public
+ web server can easily import those networking resources. You don't need to hard code resource IDs in
+ the stack's template or pass IDs as input parameters.
+ To export a stack's output value, use the Export field in the Output section of the stack's template. To
+ import those values, use the Fn::ImportValue function in the template for the other stacks.
+
