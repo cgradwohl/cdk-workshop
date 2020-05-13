@@ -1,8 +1,8 @@
 #### Commands
 `npm run synth` - logs the current CF template to log.yml
-`npm run cdk -- bootstrap` - see below
-`npm run deploy` -- see below
-
+`npm run cdk -- bootstrap` - setup initial AWS resources (see below)
+`npm run deploy` -- deploy the stack thhrough Cloud Formation (see below)
+`npm run diff` -- check a stack diff before deploy (see below)
 
 #### Notes
 1. Output of initial CF template
@@ -21,3 +21,8 @@ the deployment process.
 3. cdk deploy
 CDK apps are deployed through AWS CloudFormation. Each CDK stack maps 1:1 with CloudFormation stack.
 This means that you can use the AWS CloudFormation console to manage your stacks.
+
+4. cdk diff
+Now that we modified our stack’s contents, we can ask the toolkit to show us the difference between
+our CDK app and what’s currently deployed. This is a safe way to check what will happen once we run
+cdk deploy and is always good practice
