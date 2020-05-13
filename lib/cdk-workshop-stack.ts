@@ -14,9 +14,15 @@ export class CdkWorkshopStack extends cdk.Stack {
     });
 
     // defines an API Gateway REST API resource backed by our "hello" function.
-    new apigateway.LambdaRestApi(this, 'Endpoint', {
-      handler: hello
-    });
+    // new LambdaRestApi(scope: Construct, id: string, props: LambdaRestApiProps)
+    new apigateway.LambdaRestApi(
+      this, 
+      'Endpoint', 
+      {
+        handler: hello,
+        proxy: true, // If true, route all requests to the Lambda Function. (optional, default: true)
+      }
+    );
 
   }
 }
