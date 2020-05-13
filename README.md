@@ -41,3 +41,9 @@ each resource defined within this scope. To read more about IDs in the CDK, see 
 specific to each construct. For example, the lambda.Function construct accepts properties like runtime,
 code and handler. You can explore the various options using your IDE’s auto-complete or in the online
 documentation.
+
+6. Lambda Proxy Integration
+Lambda proxy integration is a lightweight, flexible API Gateway API integration type that allows you to
+integrate an API method – or an entire API – with a Lambda function. The Lambda function can be written
+in any language that Lambda supports. Because it's a proxy integration, you can change the Lambda function
+implementation at any time without needing to redeploy your API.
