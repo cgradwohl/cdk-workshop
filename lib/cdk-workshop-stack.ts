@@ -48,13 +48,14 @@ export class CdkWorkshopStack extends cdk.Stack {
     // define API Gateway and Model
     const api = new apigateway.RestApi(
       this,
-      "widgets-api", 
+      "restaurants-api", 
       {
         restApiName: "Restaurant-API",
       }
     );
 
     const restaurants = api.root.addResource('restaurants');
+    const search = restaurants.addResource('search');
 
     // define / endpoint
     const getIndexHandler = new lambda.Function(this,
@@ -81,6 +82,19 @@ export class CdkWorkshopStack extends cdk.Stack {
     );
     const getRestaurantsIntegration = new apigateway.LambdaIntegration(getRestaurantsHandler);
     restaurants.addMethod('GET', getRestaurantsIntegration);
+
+    // define /restaurants/search endpoint
+    const searchRestaurantsHandler = new lambda.Function(
+      this,
+      'searchRestaurantsHandler', 
+      {
+        runtime: lambda.Runtime.NODEJS_10_X,    // execution environment
+        code: lambda.Code.fromAsset('lambda'),  // code loaded from "lambda" directory
+        handler: 'restaurants.search'                // file is "hello", function is "handler"
+      }
+    );
+    const searchRestaurantsIntegration = new apigateway.LambdaIntegration(searchRestaurantsHandler);
+    search.addMethod('GET', searchRestaurantsIntegration);
 
   }
 }
