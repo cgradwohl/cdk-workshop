@@ -36,6 +36,13 @@ export class CdkWorkshopStack extends cdk.Stack {
     // );
 
     // define root /
+    /**
+     * LambdaRestApi
+     * Defines an API Gateway REST API with AWS Lambda proxy integration.
+     * The default Lambda function that handles all requests from this API.
+     * This handler will be used as a the default integration for all methods
+     * in this API, unless specified otherwise in addMethod.
+     */
     // const api = new apigateway.LambdaRestApi(
     //   this, 
     //   'restaurants-api', 
@@ -46,6 +53,11 @@ export class CdkWorkshopStack extends cdk.Stack {
     // );
 
     // define API Gateway and Model
+    /**
+     * Rest Api
+     * Represents a REST API in Amazon API Gateway.
+     * Use addResource and addMethod to configure the API model.
+     */
     const api = new apigateway.RestApi(
       this,
       "restaurants-api", 
