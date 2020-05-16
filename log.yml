@@ -1,4 +1,223 @@
 Resources:
+  widgetsapi0BCA0B12:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: Restaurant-API
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/Resource
+  widgetsapiDeployment9DE336932a486cea84a9583ae4a07fe848270e6f:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId:
+        Ref: widgetsapi0BCA0B12
+      Description: Automatically created by the RestApi construct
+    DependsOn:
+      - widgetsapiGETFE8E3A17
+      - widgetsapirestaurantsGET22CCF8A5
+      - widgetsapirestaurantsEDE71B3B
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/Deployment/Resource
+  widgetsapiDeploymentStageprod19E45538:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId:
+        Ref: widgetsapi0BCA0B12
+      DeploymentId:
+        Ref: widgetsapiDeployment9DE336932a486cea84a9583ae4a07fe848270e6f
+      StageName: prod
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/DeploymentStage.prod/Resource
+  widgetsapiCloudWatchRole13420B98:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/CloudWatchRole/Resource
+  widgetsapiAccount54650C10:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn:
+        Fn::GetAtt:
+          - widgetsapiCloudWatchRole13420B98
+          - Arn
+    DependsOn:
+      - widgetsapi0BCA0B12
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/Account
+  widgetsapirestaurantsEDE71B3B:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - widgetsapi0BCA0B12
+          - RootResourceId
+      PathPart: restaurants
+      RestApiId:
+        Ref: widgetsapi0BCA0B12
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/Default/restaurants/Resource
+  widgetsapirestaurantsGETApiPermissionCdkWorkshopStackwidgetsapiE0A045F2GETrestaurants5FB07375:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - restaurantsHandlerDE4E7F48
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: widgetsapi0BCA0B12
+            - /
+            - Ref: widgetsapiDeploymentStageprod19E45538
+            - /GET/restaurants
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/Default/restaurants/GET/ApiPermission.CdkWorkshopStackwidgetsapiE0A045F2.GET..restaurants
+  widgetsapirestaurantsGETApiPermissionTestCdkWorkshopStackwidgetsapiE0A045F2GETrestaurants49D4C92B:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - restaurantsHandlerDE4E7F48
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: widgetsapi0BCA0B12
+            - /test-invoke-stage/GET/restaurants
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/Default/restaurants/GET/ApiPermission.Test.CdkWorkshopStackwidgetsapiE0A045F2.GET..restaurants
+  widgetsapirestaurantsGET22CCF8A5:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId:
+        Ref: widgetsapirestaurantsEDE71B3B
+      RestApiId:
+        Ref: widgetsapi0BCA0B12
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - restaurantsHandlerDE4E7F48
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/Default/restaurants/GET/Resource
+  widgetsapiGETApiPermissionCdkWorkshopStackwidgetsapiE0A045F2GET6FDE14E8:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - getIndexFFE07390
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: widgetsapi0BCA0B12
+            - /
+            - Ref: widgetsapiDeploymentStageprod19E45538
+            - /GET/
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/Default/GET/ApiPermission.CdkWorkshopStackwidgetsapiE0A045F2.GET..
+  widgetsapiGETApiPermissionTestCdkWorkshopStackwidgetsapiE0A045F2GETB6E25ADB:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - getIndexFFE07390
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: widgetsapi0BCA0B12
+            - /test-invoke-stage/GET/
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/Default/GET/ApiPermission.Test.CdkWorkshopStackwidgetsapiE0A045F2.GET..
+  widgetsapiGETFE8E3A17:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId:
+        Fn::GetAtt:
+          - widgetsapi0BCA0B12
+          - RootResourceId
+      RestApiId:
+        Ref: widgetsapi0BCA0B12
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - getIndexFFE07390
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CdkWorkshopStack/widgets-api/Default/GET/Resource
   getIndexServiceRole8EF3BC7B:
     Type: AWS::IAM::Role
     Properties:
@@ -48,148 +267,6 @@ Resources:
       aws:cdk:path: CdkWorkshopStack/getIndex/Resource
       aws:asset:path: asset.baf37dc8fe7c890417582c777f5f50d5d074821a0992a1aded7491871fda9634
       aws:asset:property: Code
-  restaurantsapi89E63B79:
-    Type: AWS::ApiGateway::RestApi
-    Properties:
-      Name: restaurants-api
-    Metadata:
-      aws:cdk:path: CdkWorkshopStack/restaurants-api/Resource
-  restaurantsapiDeployment5D689E4Aab1d2edaf81f70f681069108096bb74a:
-    Type: AWS::ApiGateway::Deployment
-    Properties:
-      RestApiId:
-        Ref: restaurantsapi89E63B79
-      Description: Automatically created by the RestApi construct
-    DependsOn:
-      - restaurantsapirestaurantsGET74D717AE
-      - restaurantsapirestaurants549DE6F1
-    Metadata:
-      aws:cdk:path: CdkWorkshopStack/restaurants-api/Deployment/Resource
-  restaurantsapiDeploymentStageprod91712C44:
-    Type: AWS::ApiGateway::Stage
-    Properties:
-      RestApiId:
-        Ref: restaurantsapi89E63B79
-      DeploymentId:
-        Ref: restaurantsapiDeployment5D689E4Aab1d2edaf81f70f681069108096bb74a
-      StageName: prod
-    Metadata:
-      aws:cdk:path: CdkWorkshopStack/restaurants-api/DeploymentStage.prod/Resource
-  restaurantsapiCloudWatchRoleA0238AA9:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Action: sts:AssumeRole
-            Effect: Allow
-            Principal:
-              Service: apigateway.amazonaws.com
-        Version: "2012-10-17"
-      ManagedPolicyArns:
-        - Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - :iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
-    Metadata:
-      aws:cdk:path: CdkWorkshopStack/restaurants-api/CloudWatchRole/Resource
-  restaurantsapiAccountCC1A0B7E:
-    Type: AWS::ApiGateway::Account
-    Properties:
-      CloudWatchRoleArn:
-        Fn::GetAtt:
-          - restaurantsapiCloudWatchRoleA0238AA9
-          - Arn
-    DependsOn:
-      - restaurantsapi89E63B79
-    Metadata:
-      aws:cdk:path: CdkWorkshopStack/restaurants-api/Account
-  restaurantsapirestaurants549DE6F1:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId:
-        Fn::GetAtt:
-          - restaurantsapi89E63B79
-          - RootResourceId
-      PathPart: restaurants
-      RestApiId:
-        Ref: restaurantsapi89E63B79
-    Metadata:
-      aws:cdk:path: CdkWorkshopStack/restaurants-api/Default/restaurants/Resource
-  restaurantsapirestaurantsGETApiPermissionCdkWorkshopStackrestaurantsapi7E4903A7GETrestaurants5C27E857:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - restaurantsHandlerDE4E7F48
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: restaurantsapi89E63B79
-            - /
-            - Ref: restaurantsapiDeploymentStageprod91712C44
-            - /GET/restaurants
-    Metadata:
-      aws:cdk:path: CdkWorkshopStack/restaurants-api/Default/restaurants/GET/ApiPermission.CdkWorkshopStackrestaurantsapi7E4903A7.GET..restaurants
-  restaurantsapirestaurantsGETApiPermissionTestCdkWorkshopStackrestaurantsapi7E4903A7GETrestaurantsC6196E48:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - restaurantsHandlerDE4E7F48
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: restaurantsapi89E63B79
-            - /test-invoke-stage/GET/restaurants
-    Metadata:
-      aws:cdk:path: CdkWorkshopStack/restaurants-api/Default/restaurants/GET/ApiPermission.Test.CdkWorkshopStackrestaurantsapi7E4903A7.GET..restaurants
-  restaurantsapirestaurantsGET74D717AE:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: GET
-      ResourceId:
-        Ref: restaurantsapirestaurants549DE6F1
-      RestApiId:
-        Ref: restaurantsapi89E63B79
-      AuthorizationType: NONE
-      Integration:
-        IntegrationHttpMethod: POST
-        Type: AWS_PROXY
-        Uri:
-          Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - ":apigateway:"
-              - Ref: AWS::Region
-              - :lambda:path/2015-03-31/functions/
-              - Fn::GetAtt:
-                  - restaurantsHandlerDE4E7F48
-                  - Arn
-              - /invocations
-    Metadata:
-      aws:cdk:path: CdkWorkshopStack/restaurants-api/Default/restaurants/GET/Resource
   restaurantsHandlerServiceRoleC11EB017:
     Type: AWS::IAM::Role
     Properties:
@@ -244,6 +321,20 @@ Resources:
     Properties:
       Modules: aws-cdk=1.38.0,@aws-cdk/assets=1.38.0,@aws-cdk/aws-apigateway=1.38.0,@aws-cdk/aws-cloudwatch=1.38.0,@aws-cdk/aws-ec2=1.38.0,@aws-cdk/aws-events=1.38.0,@aws-cdk/aws-iam=1.38.0,@aws-cdk/aws-kms=1.38.0,@aws-cdk/aws-lambda=1.38.0,@aws-cdk/aws-logs=1.38.0,@aws-cdk/aws-s3=1.38.0,@aws-cdk/aws-s3-assets=1.38.0,@aws-cdk/aws-sqs=1.38.0,@aws-cdk/aws-ssm=1.38.0,@aws-cdk/cloud-assembly-schema=1.38.0,@aws-cdk/core=1.38.0,@aws-cdk/cx-api=1.38.0,@aws-cdk/region-info=1.38.0,jsii-runtime=node.js/v12.16.3
     Condition: CDKMetadataAvailable
+Outputs:
+  widgetsapiEndpoint2B78C075:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: widgetsapi0BCA0B12
+          - .execute-api.
+          - Ref: AWS::Region
+          - "."
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: widgetsapiDeploymentStageprod19E45538
+          - /
 Parameters:
   AssetParametersbaf37dc8fe7c890417582c777f5f50d5d074821a0992a1aded7491871fda9634S3BucketB27AE360:
     Type: String
@@ -254,20 +345,6 @@ Parameters:
   AssetParametersbaf37dc8fe7c890417582c777f5f50d5d074821a0992a1aded7491871fda9634ArtifactHash7B4B6794:
     Type: String
     Description: Artifact hash for asset "baf37dc8fe7c890417582c777f5f50d5d074821a0992a1aded7491871fda9634"
-Outputs:
-  restaurantsapiEndpoint831A89FE:
-    Value:
-      Fn::Join:
-        - ""
-        - - https://
-          - Ref: restaurantsapi89E63B79
-          - .execute-api.
-          - Ref: AWS::Region
-          - "."
-          - Ref: AWS::URLSuffix
-          - /
-          - Ref: restaurantsapiDeploymentStageprod91712C44
-          - /
 Conditions:
   CDKMetadataAvailable:
     Fn::Or:

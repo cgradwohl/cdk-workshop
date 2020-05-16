@@ -35,7 +35,29 @@ export class CdkWorkshopStack extends cdk.Stack {
     //   }
     // );
 
-    const getIndex = new lambda.Function(this,
+    // define root /
+    // const api = new apigateway.LambdaRestApi(
+    //   this, 
+    //   'restaurants-api', 
+    //   {
+    //     handler: getIndexHandler,
+    //     proxy: false,
+    //   }
+    // );
+
+    // define API Gateway and Model
+    const api = new apigateway.RestApi(
+      this,
+      "widgets-api", 
+      {
+        restApiName: "Restaurant-API",
+      }
+    );
+
+    const restaurants = api.root.addResource('restaurants');
+
+    // define / endpoint
+    const getIndexHandler = new lambda.Function(this,
       'getIndex', 
       {
         runtime: lambda.Runtime.NODEJS_10_X,    // execution environment
@@ -43,18 +65,13 @@ export class CdkWorkshopStack extends cdk.Stack {
         handler: 'index.get'                // file is "hello", function is "handler"
       }
     );
+    
+    const getIndexIntegration = new apigateway.LambdaIntegration(getIndexHandler);
+    api.root.addMethod('GET', getIndexIntegration);
 
-    // define root /
-    const api = new apigateway.LambdaRestApi(
-      this, 
-      'restaurants-api', 
-      {
-        handler: getIndex,
-        proxy: false,
-      }
-    );
 
-    const geRestaurantsHandler = new lambda.Function(this,
+    // define /restaurants endpoint
+    const getRestaurantsHandler = new lambda.Function(this,
       'restaurantsHandler', 
       {
         runtime: lambda.Runtime.NODEJS_10_X,    // execution environment
@@ -62,11 +79,7 @@ export class CdkWorkshopStack extends cdk.Stack {
         handler: 'restaurants.get'                // file is "hello", function is "handler"
       }
     );
-    const getRestaurantsIntegration = new apigateway.LambdaIntegration(geRestaurantsHandler);
-    
-    // /restuarants
-    const restaurants = api.root.addResource('restaurants');
-    
+    const getRestaurantsIntegration = new apigateway.LambdaIntegration(getRestaurantsHandler);
     restaurants.addMethod('GET', getRestaurantsIntegration);
 
   }
