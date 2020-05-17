@@ -66,7 +66,14 @@ export class CdkWorkshopStack extends cdk.Stack {
       }
     );
 
-    const restaurants = api.root.addResource('restaurants');
+    const restaurants = api.root.addResource(
+      // arg[0] - PathPart
+      'restaurants',
+      // arg[1] - options: ResourceOptions
+      {
+
+      }
+    );
     const search = restaurants.addResource('search');
 
     // define / endpoint
@@ -92,8 +99,27 @@ export class CdkWorkshopStack extends cdk.Stack {
         handler: 'restaurants.get'                // file is "hello", function is "handler"
       }
     );
-    const getRestaurantsIntegration = new apigateway.LambdaIntegration(getRestaurantsHandler);
-    restaurants.addMethod('GET', getRestaurantsIntegration);
+    const getRestaurantsIntegration = new apigateway.LambdaIntegration(
+      getRestaurantsHandler,
+      {
+
+      }
+    );
+    
+    /**
+     * method: addMethod
+     * aws-apigateway.Resource
+     */
+    restaurants.addMethod(
+      // arg[0] - httpMethod: string
+      'GET',
+      // arg[1] - ?integration: Integration
+      getRestaurantsIntegration,
+      // arg[3]  - ?options: MethodOptions
+      {
+        authorizationType: apigateway.AuthorizationType.IAM
+      }
+    );
 
     // define /restaurants/search endpoint
     const searchRestaurantsHandler = new lambda.Function(
